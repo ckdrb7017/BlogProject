@@ -10,7 +10,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val myInformation = MyInfoTest()
+        val myInformation2 = MyInfoTest2()
+
         myInformation.printInfo()
+        myInformation2.printInfo()
+
 
     }
 }
