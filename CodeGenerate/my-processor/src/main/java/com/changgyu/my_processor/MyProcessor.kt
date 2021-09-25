@@ -27,7 +27,7 @@ class MyProcessor: AbstractProcessor() {
     * Run Console에서 print를 찍어도 안보인다.
     * Build창으로 가서 찍히는 로그를 봐야 한다.
     * 또한 컴파일 타임에 로그를 찍기 위해선 println이나 Log 클래스가 아니라
-    *  processingEnv.messager.printMessage(Diagnostic.Kind.~~, "")
+    * Messager클래스의 processingEnv.messager.printMessage(Diagnostic.Kind.~~, "")
     * 를 사용해야 한다.
     *
     * */
@@ -36,19 +36,19 @@ class MyProcessor: AbstractProcessor() {
             annotations: MutableSet<out TypeElement>?,  //이 프로세서가 처리하는 어노테이션들에 대한 TypeElement
             roundEnv: RoundEnvironment      //어노테이션에 붙은 Elements 를 갖는 인터페이스
     ): Boolean {
+        if (!roundEnv.errorRaised() && !roundEnv.processingOver()) {    //이전 라운드에서 에러가 안나고 다음 라운드의 대상이 아닐때
 
-        val annotatedClasses = roundEnv.getElementsAnnotatedWith(MyAnnotation::class.java)
-        if(annotatedClasses.isEmpty()) return false
+            val annotatedClasses = roundEnv.getElementsAnnotatedWith(MyAnnotation::class.java)
+            if(annotatedClasses.isEmpty()) return false
 
-
-
-        annotatedClasses.forEach {
-            if(it.kind != ElementKind.CLASS) return false
-            makeMyInfoPrintFunc(it)
-            makeMyInformationClass(it)
+            annotatedClasses.forEach {
+                if(it.kind != ElementKind.CLASS) return false
+                makeMyInfoPrintFunc(it)
+                makeMyInformationClass(it)
+            }
         }
 
-        return true
+        return false
     }
 
     private fun makeMyInfoPrintFunc(element: Element){
